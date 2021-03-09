@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 设置为IProjectAppDao接口方法提供sql语句配置 -->
+<mapper namespace="com.ssm.dao.IProjectAppDao">
+
+    <resultMap id="projectCreate" type="com.ssm.model.ProjectCreate">
+        <result column="id" property="id"/>
+        <result column="p_name" property="proName"/>
+        <result column="p_start_date" property="startDate"/>
+        <result column="p_end_date" property="endDate"/>
+        <result column="p_create_datetime" property="createDate"/>
+        <result column="p_update_datetime" property="updateDate"/>
+        <result column="p_last_datetime" property="lastDate"/>
+        <result column="remark" property="remark"/>
+    </resultMap>
+    <select id="allProjectCreate" resultMap="projectCreate" parameterType="com.ssm.model.ProjectCreate">
+        SELECT
+        id,
+        p_name as proName,
+        DATE_FORMAT(p_start_date,'%Y-%m-%d %H:%i:%s') as startDate,
+        DATE_FORMAT(p_end_date,'%Y-%m-%d %H:%i:%s') as endDate,
+        DATE_FORMAT(p_create_datetime,'%Y-%m-%d %H:%i:%s') as createDate,
+        remark
+        FROM t_project_appproval
+        <where>
+            <if test="proName != null">
+                p_name like concat ('%',#{proName},'%')
+            </if>
+        </where>
+        order by p_start_date desc
+        limit #{pageIndex},#{pageSize}
+    </select>
+    <select id="countProjectCreate" parameterType="com.ssm.model.ProjectCreate" resultType="java.lang.Integer">
+        select count(*) from t_project_appproval
+        <where>
+            <if test="proName != null">
+                p_name like concat ('%',#{proName},'%')
+            </if>
+        </where>
+    </select>
+    <delete id="deleteProjectCreate">
+        delete from t_project_appproval where id in
+        <foreach collection="ids" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <insert id="insertProjectCreate" parameterType="com.ssm.model.ProjectCreate">
+        insert into t_project_appproval(id,p_name,p_start_date,p_end_date,remark)
+        values (#{id},#{proName},#{startDate},#{endDate},#{remark})
+    </insert>
+
+    <update id="updateProjectCreate" parameterType="com.ssm.model.ProjectCreate">
+        update t_project_appproval set
+           p_name=#{proName},
+           p_start_date=#{startDate},
+           p_end_date=#{endDate},
+           remark=#{remark},
+           p_update_datetime=#{updateDate},
+           p_last_datetime=#{lastDate}
+         where id=#{id}
+    </update>
+
+    <select id="findIdProjectCreate" parameterType="java.lang.String" resultMap="projectCreate">
+        SELECT
+        id,
+        p_name as proName,
+        DATE_FORMAT(p_start_date,'%Y-%m-%d %H:%i:%s') as startDate,
+        DATE_FORMAT(p_end_date,'%Y-%m-%d %H:%i:%s') as endDate,
+        DATE_FORMAT(p_create_datetime,'%Y-%m-%d %H:%i:%s') as createDate,
+        remark
+        FROM t_project_appproval
+        where id=#{id}
+    </select>
+
+</mapper>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 设置为IUserDao接口方法提供sql语句配置 -->
+<mapper namespace="com.ssm.dao.IMenuDao">
+
+    <resultMap id="menuTree" type="com.ssm.model.MenuTree">
+        <result column="id" property="id"/>
+        <result column="text" property="text" />
+        <result column="pid" property="pid"/>
+        <result column="purl" property="url"/>
+        <result column="status" property="status"/>
+    </resultMap>
+    <select id="MenuTreeList"  resultMap="menuTree" >
+        SELECT * FROM  t_menu where status=1
+    </select>
+
+</mapper>
